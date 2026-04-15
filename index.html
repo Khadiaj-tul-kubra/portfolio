@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Khadija Tul Kubra | 3D Frontend Developer Portfolio</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Three.js -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050510;
+            color: #f0f0f0;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(2px);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            backdrop-filter: blur(12px);
+            background: rgba(10, 10, 30, 0.5);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #aaffff, #7a2be0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #b77eff;
+            text-shadow: 0 0 5px #b77eff;
+        }
+
+        .talk-btn {
+            background: linear-gradient(95deg, #7c3aed, #a855f7);
+            padding: 0.6rem 1.3rem;
+            border-radius: 30px;
+            font-weight: 600;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .talk-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #a855f7;
+        }
+
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 2rem 8%;
+            gap: 2rem;
+        }
+
+        .hero-left h1 {
+            font-size: 3.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .hero-left h1 span {
+            background: linear-gradient(125deg, #FFD966, #FF6B6B, #a37cff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .type-text {
+            font-size: 1.7rem;
+            margin: 1rem 0;
+            color: #c9b6ff;
+        }
+        .desc {
+            max-width: 500px;
+            margin: 1.5rem 0;
+            color: #bfbfe0;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .btn-primary, .btn-outline {
+            padding: 0.8rem 1.8rem;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+        .btn-primary {
+            background: #8b5cf6;
+            color: white;
+        }
+        .btn-outline {
+            border: 1.5px solid #8b5cf6;
+            color: #e0e0ff;
+        }
+        .hero-right {
+            background: rgba(15,15,40,0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .info-card p {
+            margin: 0.8rem 0;
+        }
+
+        section {
+            padding: 5rem 8%;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, #a855f7, #3b82f6);
+        }
+
+        .skills-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .skill-tag {
+            background: rgba(123, 74, 226, 0.2);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .skill-tag i {
+            margin-right: 8px;
+            color: #c084fc;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .project-card {
+            background: rgba(20, 20, 50, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.5);
+            border-color: #a855f7;
+        }
+        .project-img {
+            width: 100%;
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        .project-info {
+            padding: 1.5rem;
+        }
+        .project-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .project-info p {
+            color: #cbcbe6;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 1rem;
+        }
+        .tech-stack span {
+            background: #2d2d5a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .project-link {
+            color: #c084fc;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .project-link:hover {
+            color: #e9b5ff;
+            gap: 12px;
+        }
+
+        .contact-section {
+            background: rgba(0,0,0,0.4);
+            border-radius: 2rem;
+            margin: 2rem 8% 4rem;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+        }
+        .contact-flex {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+        }
+        .contact-info a {
+            color: #f0f0ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+        .contact-info i {
+            font-size: 1.6rem;
+            color: #c084fc;
+        }
+        .github-btn {
+            background: #0a0a2a;
+            padding: 0.7rem 1.8rem;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #a855f7;
+            text-decoration: none;
+            color: white;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        @media (max-width: 800px) {
+            .hero-left h1 { font-size: 2.5rem; }
+            .navbar { flex-direction: column; gap: 1rem; }
+            .nav-links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
+            .hero { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="canvas-container"></div>
+
+<div class="content">
+    <nav class="navbar">
+        <div class="logo">✦ K.T.KUBRA</div>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+        </div>
+        <button class="talk-btn" id="letsTalkBtn">Let's Talk ✨</button>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-left">
+            <h1>HEY, I'M <span>KHADIJA TUL KUBRA</span><br>A CREATIVE<br><span id="dynamic-role">FRONTEND DEVELOPER</span></h1>
+            <div class="type-text"><i class="fas fa-code"></i> UI/UX | Backend | Problem Solver</div>
+            <p class="desc">Passionate frontend developer with a flair for modern web experiences. Currently pursuing BSCS, strong foundation in web technologies, backend systems & creative design. FSC & Matric from KRL Model College.</p>
+            <div class="hero-buttons">
+                <a href="#projects" class="btn-primary"><i class="fas fa-eye"></i> View Work</a>
+                <a href="#contact" class="btn-outline"><i class="fas fa-paper-plane"></i> Contact Me</a>
+            </div>
+        </div>
+        <div class="hero-right">
+            <div class="info-card">
+                <p><i class="fas fa-graduation-cap"></i> <strong>Education:</strong> FSC & Matric (KRL Model College), Currently BSCS</p>
+                <p><i class="fas fa-map-marker-alt"></i> <strong>Based in:</strong> Pakistan | Global Remote</p>
+                <p><i class="fas fa-laptop-code"></i> <strong>Experience:</strong> Frontend Developer | Web Enthusiast</p>
+                <p><i class="fas fa-award"></i> <strong>Goal:</strong> Building impactful digital solutions</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills">
+        <h2 class="section-title"><i class="fas fa-cog"></i> Tech Arsenal & Skills</h2>
+        <div class="skills-grid">
+            <div class="skill-tag"><i class="fab fa-html5"></i> HTML5</div>
+            <div class="skill-tag"><i class="fab fa-css3-alt"></i> CSS3</div>
+            <div class="skill-tag"><i class="fab fa-js"></i> JavaScript (ES6+)</div>
+            <div class="skill-tag"><i class="fab fa-react"></i> Web Development</div>
+            <div class="skill-tag"><i class="fas fa-database"></i> PHP</div>
+            <div class="skill-tag"><i class="fas fa-database"></i> SQL</div>
+            <div class="skill-tag"><i class="fas fa-database"></i> NoSQL (MongoDB)</div>
+            <div class="skill-tag"><i class="fab fa-python"></i> Python</div>
+            <div class="skill-tag"><i class="fas fa-code"></i> C++</div>
+            <div class="skill-tag"><i class="fas fa-code"></i> C#</div>
+            <div class="skill-tag"><i class="fab fa-git-alt"></i> Git & GitHub</div>
+            <div class="skill-tag"><i class="fas fa-chart-line"></i> Digital Marketing</div>
+            <div class="skill-tag"><i class="fas fa-pen-fancy"></i> Copywriting basics</div>
+            <div class="skill-tag"><i class="fas fa-paintbrush"></i> Figma</div>
+        </div>
+    </section>
+
+    <!-- Projects Section with Custom Images -->
+    <section id="projects">
+        <h2 class="section-title"><i class="fas fa-project-diagram"></i> Featured Projects</h2>
+        <div class="projects-grid">
+            <!-- Project 1: University Management System -->
+            <div class="project-card">
+                <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1562774053-701939374585?w=600&h=400&fit=crop'), linear-gradient(135deg, #1a2a4f, #0f1a2f); background-blend-mode: overlay; background-size: cover;"></div>
+                <div class="project-info">
+                    <h3>🏛️ University Management System</h3>
+                    <p>Complete ERP solution for managing students, courses, faculty, and grades. Built with PHP, MySQL, and modern frontend stack. Admin dashboard, secure login, dynamic reporting, and course registration system.</p>
+                    <div class="tech-stack"><span>PHP</span><span>MySQL</span><span>HTML/CSS</span><span>JavaScript</span></div>
+                    <a href="#" class="project-link" data-project="ums"><i class="fab fa-github"></i> View Code on GitHub</a>
+                </div>
+            </div>
+            <!-- Project 2: Emergency Help App -->
+            <div class="project-card">
+                <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1584515933487-779824d29309?w=600&h=400&fit=crop'), linear-gradient(145deg, #2c2e5a, #1a1f3c); background-blend-mode: overlay; background-size: cover;"></div>
+                <div class="project-info">
+                    <h3>🚨 Emergency Help App</h3>
+                    <p>Web-based emergency alert system with real-time location sharing, SOS triggers, and instant contact alerts. Implemented using JavaScript APIs and NoSQL for fast response. Helps users alert family and emergency services with one click.</p>
+                    <div class="tech-stack"><span>JavaScript</span><span>Firebase/Firestore</span><span>HTML/CSS</span><span>Geolocation API</span></div>
+                    <a href="#" class="project-link" data-project="emergency"><i class="fab fa-github"></i> Live Demo / Repo</a>
+                </div>
+            </div>
+            <!-- Project 3: Online Shopping Platform -->
+            <div class="project-card">
+                <div class="project-img" style="background-image: url('https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600&h=400&fit=crop'), linear-gradient(120deg, #2a2055, #1b153a); background-blend-mode: overlay; background-size: cover;"></div>
+                <div class="project-info">
+                    <h3>🛒 Online Shopping Platform</h3>
+                    <p>Full-featured e-commerce experience: product catalog, shopping cart, user authentication, order management, and payment gateway simulation. Built with PHP, MySQL, responsive UI, and secure session handling.</p>
+                    <div class="tech-stack"><span>PHP</span><span>MySQL</span><span>Bootstrap</span><span>jQuery</span></div>
+                    <a href="#" class="project-link" data-project="shop"><i class="fab fa-github"></i> Repository</a>
+                </div>
+            </div>
+        </div>
+        <p style="margin-top: 1.5rem; text-align:center; font-size: 0.9rem;">⭐ More projects available on GitHub — each project represents problem-solving mindset and real-world impact.</p>
+    </section>
+
+    <!-- Contact Section -->
+    <div id="contact"></div>
+    <div class="contact-section">
+        <div class="contact-flex">
+            <div class="contact-info">
+                <h3><i class="fas fa-paper-plane"></i> Let's Connect & Collaborate</h3>
+                <p>I'm open for freelance, internships, and exciting frontend collaborations.</p>
+                <a href="mailto:khadija.dev@creativeportfolio.com"><i class="fas fa-envelope"></i> khadija.dev@creativeportfolio.com</a>
+                <a href="#" id="githubLink" target="_blank"><i class="fab fa-github"></i> github.com/khadijatulkubra</a>
+                <a href="#"><i class="fab fa-linkedin"></i> linkedin.com/in/khadija-dev</a>
+                <div style="margin-top: 1rem;">
+                    <button class="talk-btn" id="copyEmailBtn"><i class="far fa-copy"></i> Copy Email</button>
+                </div>
+            </div>
+            <div>
+                <div style="background: rgba(255,255,255,0.05); border-radius: 1rem; padding: 1.5rem;">
+                    <h4><i class="fas fa-phone-alt"></i> Quick Message</h4>
+                    <p style="margin-top: 0.5rem;">Want to discuss a project? Hit the "Let's Talk" button or email me directly.</p>
+                    <a href="https://github.com/" class="github-btn" id="dynamicGithubBtn" target="_blank"><i class="fab fa-github"></i> My GitHub Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 Khadija Tul Kubra — Frontend Developer & Creator. Built with Three.js particles & passion.</p>
+    </footer>
+</div>
+
+<script type="module">
+    import * as THREE from 'three';
+
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = null;
+    scene.fog = new THREE.FogExp2(0x050510, 0.002);
+    
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 2, 12);
+    camera.lookAt(0, 0, 0);
+    
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x050510, 1);
+    container.appendChild(renderer.domElement);
+    
+    // Floating particles (flies)
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particleCount = 2000;
+    const posArray = new Float32Array(particleCount * 3);
+    for(let i = 0; i < particleCount; i++) {
+        posArray[i*3] = (Math.random() - 0.5) * 45;
+        posArray[i*3+1] = (Math.random() - 0.5) * 25;
+        posArray[i*3+2] = (Math.random() - 0.5) * 30 - 10;
+    }
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({ color: 0xaa88ff, size: 0.07, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    
+    // Second layer of floating stars
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 1500;
+    const starPos = new Float32Array(starCount * 3);
+    for(let i=0; i<starCount; i++) {
+        starPos[i*3] = (Math.random() - 0.5) * 65;
+        starPos[i*3+1] = (Math.random() - 0.5) * 35;
+        starPos[i*3+2] = (Math.random() - 0.5) * 45 - 20;
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({ color: 0x77aaff, size: 0.05, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
+    const starPoints = new THREE.Points(starGeo, starMat);
+    scene.add(starPoints);
+    
+    // Decorative torus knot
+    const knotGeo = new THREE.TorusKnotGeometry(1.3, 0.3, 128, 16, 3, 4);
+    const knotMat = new THREE.MeshStandardMaterial({ color: 0x9f7aea, emissive: 0x2a1e5a, wireframe: true, transparent: true, opacity: 0.2 });
+    const knot = new THREE.Mesh(knotGeo, knotMat);
+    scene.add(knot);
+    
+    const ambientLight = new THREE.AmbientLight(0x222222);
+    scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0xaa66ff, 0.6);
+    pointLight.position.set(2, 3, 5);
+    scene.add(pointLight);
+    const backLight = new THREE.PointLight(0x3388ff, 0.4);
+    backLight.position.set(-2, 1, -4);
+    scene.add(backLight);
+    
+    let time = 0;
+    function animate() {
+        requestAnimationFrame(animate);
+        time += 0.005;
+        particlesMesh.rotation.y = time * 0.1;
+        particlesMesh.rotation.x = Math.sin(time * 0.2) * 0.1;
+        starPoints.rotation.y = time * 0.07;
+        starPoints.rotation.x = time * 0.05;
+        knot.rotation.x = time * 0.3;
+        knot.rotation.y = time * 0.5;
+        camera.position.x += (0 - camera.position.x) * 0.03;
+        camera.position.y += (Math.sin(time * 0.2) * 0.1 - camera.position.y) * 0.03;
+        camera.lookAt(0, 0, 0);
+        renderer.render(scene, camera);
+    }
+    animate();
+    
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+</script>
+
+<script type="text/javascript">
+    // Interactive UI
+    const talkBtn = document.getElementById('letsTalkBtn');
+    const copyBtn = document.getElementById('copyEmailBtn');
+    const githubDynamic = document.getElementById('dynamicGithubBtn');
+    const githubLinkSpan = document.getElementById('githubLink');
+    const userEmail = "khadija.tul.kubra@devportfolio.com";
+    
+    talkBtn.addEventListener('click', () => {
+        window.location.href = "mailto:" + userEmail + "?subject=Collaboration%20Request%20for%20Frontend%20Project";
+    });
+    
+    if(copyBtn) {
+        copyBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(userEmail).then(() => {
+                alert("📧 Email copied to clipboard: " + userEmail);
+            }).catch(() => alert("Manual copy: " + userEmail));
+        });
+    }
+    
+    const gitMockUrl = "https://github.com/khadijatulkubra";
+    if(githubDynamic) githubDynamic.href = gitMockUrl;
+    if(githubLinkSpan) githubLinkSpan.href = gitMockUrl;
+    
+    // Dynamic role changer
+    const roles = ["FRONTEND DEVELOPER", "UI/UX ENTHUSIAST", "PHP & SQL DEV", "CREATIVE CODER"];
+    let roleIdx = 0;
+    const roleSpan = document.getElementById('dynamic-role');
+    if(roleSpan) {
+        setInterval(() => {
+            roleIdx = (roleIdx + 1) % roles.length;
+            roleSpan.textContent = roles[roleIdx];
+        }, 2800);
+    }
+    
+    // Smooth scroll
+    document.querySelectorAll('.nav-links a, .hero-buttons a').forEach(anchor => {
+        if(anchor.getAttribute('href') && anchor.getAttribute('href').startsWith('#')) {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if(targetId && targetId !== "#") {
+                    const targetEl = document.querySelector(targetId);
+                    if(targetEl) {
+                        e.preventDefault();
+                        targetEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                }
+            });
+        }
+    });
+    
+    const contactBtnHero = document.querySelector('.btn-outline[href="#contact"]');
+    if(contactBtnHero) {
+        contactBtnHero.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+    const viewWorkBtn = document.querySelector('.btn-primary[href="#projects"]');
+    if(viewWorkBtn) {
+        viewWorkBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
+        });
+    }
+    
+    // Project links with demo info
+    const projectLinks = document.querySelectorAll('.project-link');
+    const projectDetails = {
+        ums: "University Management System: Full source code available on GitHub. Features: Student registration, course management, grade tracking, admin dashboard. Built with PHP and MySQL.",
+        emergency: "Emergency Help App: Real-time SOS alert system with location sharing. Firebase backend for instant notifications. Demo available on request.",
+        shop: "Online Shopping Platform: Complete e-commerce solution with cart, checkout, user auth, and product management. Responsive design."
+    };
+    
+    projectLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const project = link.getAttribute('data-project');
+            if(project && projectDetails[project]) {
+                alert("🔗 GitHub Repository Preview:\n" + projectDetails[project] + "\n\nContact me for private access or check my GitHub profile!");
+            } else {
+                alert("🔗 GitHub repository: This project demonstrates full-stack capabilities. Visit my GitHub profile for more details!");
+            }
+        });
+    });
+</script>
+</body>
+</html>
